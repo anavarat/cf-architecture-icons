@@ -1,0 +1,39 @@
+direction: right
+layout-engine: dagre
+
+title: Minimal Cloudflare Worker API (Official Icons)
+
+User: {
+  label: "User"
+}
+Worker: {
+  label: "Cloudflare Worker (/api/*)"
+  icon: "../icons/cf/workers.svg"
+}
+D1: {
+  label: "D1"
+  icon: "../icons/cf/d1.svg"
+}
+KV: {
+  label: "KV"
+  icon: "../icons/cf/kv.svg"
+}
+R2: {
+  label: "R2"
+  icon: "../icons/cf/r2.svg"
+}
+Queue: {
+  label: "Queue"
+  icon: "../icons/cf/queues.svg"
+}
+Cron: {
+  label: "Cron Trigger"
+  icon: "../icons/cf/workers.svg"
+}
+
+User -> Worker: API request
+Worker -> D1: query/update
+Worker -> KV: read/write cache
+Worker -> R2: upload/download object
+Worker -> Queue: enqueue background task
+Cron -> Worker: scheduled trigger

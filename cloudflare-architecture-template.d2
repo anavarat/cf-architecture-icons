@@ -1,0 +1,118 @@
+direction: right
+layout-engine: dagre
+
+title: Cloudflare Developer Platform - Architecture Template
+
+User: {
+  label: "User"
+}
+Internet: {
+  label: "Internet"
+}
+
+Cloudflare: {
+  label: "Cloudflare Developer Platform"
+  icon: "./icons/cf/workers.svg"
+
+  DNS: {
+    label: "DNS"
+    icon: "./icons/cf/dns.svg"
+  }
+  WAF: {
+    label: "WAF"
+    icon: "./icons/cf/waf.svg"
+  }
+  CDN: {
+    label: "CDN"
+  }
+
+  App: {
+    label: "Application Layer"
+    WorkerAPI: {
+      label: "Workers API"
+      icon: "./icons/cf/workers.svg"
+    }
+    WorkerUI: {
+      label: "Pages / Site"
+      icon: "./icons/cf/pages.svg"
+    }
+    Assets: {
+      label: "Static Assets"
+      icon: "./icons/cf/pages.svg"
+    }
+  }
+
+  Data: {
+    label: "Data & Storage"
+    D1: {
+      label: "D1"
+      icon: "./icons/cf/d1.svg"
+    }
+    KV: {
+      label: "KV"
+      icon: "./icons/cf/kv.svg"
+    }
+    R2: {
+      label: "R2"
+      icon: "./icons/cf/r2.svg"
+    }
+    DO: {
+      label: "Durable Objects"
+      icon: "./icons/cf/durable-objects.svg"
+    }
+  }
+
+  Async: {
+    label: "Async & Events"
+    Queue: {
+      label: "Queues"
+      icon: "./icons/cf/queues.svg"
+    }
+    Cron: {
+      label: "Cron Triggers"
+      icon: "./icons/cf/workers.svg"
+    }
+  }
+
+  AI: {
+    label: "Workers AI"
+    icon: "./icons/cf/workers-ai.svg"
+  }
+  Vectorize: {
+    label: "Vectorize"
+    icon: "./icons/cf/vectorize.svg"
+  }
+}
+
+Origins: {
+  label: "External Systems"
+  API: {
+    label: "Third-Party API"
+    icon: "./icons/cf/api.svg"
+  }
+  Webhook: {
+    label: "Webhook Source"
+  }
+}
+
+User -> Internet: request
+Internet -> Cloudflare.DNS: resolve domain
+Cloudflare.DNS -> Cloudflare.WAF: route
+Cloudflare.WAF -> Cloudflare.CDN: inspect/cache
+Cloudflare.CDN -> Cloudflare.App.WorkerUI: site traffic
+Cloudflare.CDN -> Cloudflare.App.WorkerAPI: API traffic
+
+Cloudflare.App.WorkerAPI -> Cloudflare.Data.D1: read/write relational data
+Cloudflare.App.WorkerAPI -> Cloudflare.Data.KV: read/write hot key-values
+Cloudflare.App.WorkerAPI -> Cloudflare.Data.R2: store/fetch blobs
+Cloudflare.App.WorkerAPI -> Cloudflare.Data.DO: coordinate state/session
+
+Cloudflare.App.WorkerAPI -> Cloudflare.Async.Queue: enqueue jobs
+Cloudflare.Async.Cron -> Cloudflare.App.WorkerAPI: scheduled trigger
+Cloudflare.Async.Queue -> Cloudflare.App.WorkerAPI: consumer trigger
+
+Cloudflare.App.WorkerAPI -> Cloudflare.AI: inference
+Cloudflare.App.WorkerAPI -> Cloudflare.Vectorize: embeddings/search
+
+Cloudflare.App.WorkerAPI -> Origins.API: fetch upstream data
+Origins.Webhook -> Cloudflare.App.WorkerAPI: send events
